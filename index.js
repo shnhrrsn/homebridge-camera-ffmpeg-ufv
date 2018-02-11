@@ -4,6 +4,7 @@ var Accessory, hap, UUIDGen;
 
 var http = require('http');
 var https = require('https');
+var URL = require('url');
 
 var debug = require('debug')('camera-ffmpeg-ufv');
 var UFV = require('./ufv.js').UFV;
@@ -106,8 +107,7 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
                   serverName = discoveredServer.name;
 
                   // Hostname for the streams:
-                  streamingHost = discoveredServer.host;
-
+                  streamingHost = self.config.overrideHost ? nvrConfig.apiHost : discoveredServer.host;
                 });
 
                 // Hack: there is at this time only one 'server' object.
@@ -140,6 +140,16 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
 
                       if ( discoveredChannel.hasOwnProperty('rtspUris') ) {
                         var rtspUri = discoveredChannel.rtspUris[0];
+
+                        // Since the Hostname isn't configurable from UFV admin, we can override the hostname here
+                        if (self.config.overrideHost) {
+                          var url = URL.parse(rtspUri, true);
+                          url.hostname = nvrConfig.apiHost;
+                          delete url.href;
+                          delete url.host;
+                          rtspUri = URL.format(url);
+                        }
+                        debug("Discovered server " + rtspUri);
                       } else {
                         var rtspUri = 'rtsp://' + streamingHost + ':' + streamingPort + '/' + rtspAlias;
                       }
