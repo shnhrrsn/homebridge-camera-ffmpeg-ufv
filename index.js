@@ -282,7 +282,12 @@ ffmpegUfvPlatform.prototype.setupMotionCache = function (nvrConfig, discoveredNv
   setInterval(function () {
     // Setup timer to fetch cache for motion per nvr
     var now = Date.now();
+
+    // Set the minimum motion limit to 5 minutes in the past
     var motionDuration = discoveredServer.alertSettings.motionEmailCoolDownMs; // ms
+    if (motionDuration < 60 * 1000 * 3) {
+      motionDuration = 60 * 1000 * 3;
+    }
     var options = {
         query: {
             // idsOnly: true,
