@@ -286,7 +286,7 @@ ffmpegUfvPlatform.prototype.setupMotionCache = function (nvrConfig, discoveredNv
     var options = {
         query: {
             // idsOnly: true,
-            startTime: now - (60 * 1000 * motionDuration),
+            startTime: now - motionDuration,
             endTime: now,
             sortBy: 'startTime',
             sort: 'desc',
