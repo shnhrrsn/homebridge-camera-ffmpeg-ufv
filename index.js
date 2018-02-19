@@ -283,6 +283,9 @@ ffmpegUfvPlatform.prototype.setupMotionCache = function (nvrConfig, discoveredNv
     // Setup timer to fetch cache for motion per nvr
     var now = Date.now();
 
+    // My docker instance experiences time drift when running on a Mac. This helps with that.
+    var twoHoursInTheFuture = 2 + 60 * 60 * 1000;
+
     // Set the minimum motion limit to 5 minutes in the past
     var motionDuration = discoveredServer.alertSettings.motionEmailCoolDownMs; // ms
     if (motionDuration < 60 * 1000 * 3) {
@@ -292,7 +295,7 @@ ffmpegUfvPlatform.prototype.setupMotionCache = function (nvrConfig, discoveredNv
         query: {
             // idsOnly: true,
             startTime: now - motionDuration,
-            endTime: now,
+            endTime: now + twoHoursInTheFuture,
             sortBy: 'startTime',
             sort: 'desc',
             cameras: allCameras,
