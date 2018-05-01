@@ -1,6 +1,6 @@
 'use strict';
 
-var Accessory, hap, UUIDGen;
+var Accessory, hap, UUIDGen, Service, Characteristic;
 
 var http = require('http');
 var https = require('https');
@@ -11,9 +11,11 @@ var UFV = require('./ufv.js').UFV;
 const apiEndpoint = '/api/2.0';
 
 module.exports = function(homebridge) {
-  Accessory = homebridge.platformAccessory;
   hap = homebridge.hap;
   UUIDGen = homebridge.hap.uuid;
+  Accessory = homebridge.platformAccessory;
+  Service = hap.Service,
+  Characteristic = hap.Characteristic,
 
   homebridge.registerPlatform("homebridge-camera-ffmpeg-ufv", "camera-ffmpeg-ufv", ffmpegUfvPlatform, true);
 }
@@ -161,6 +163,12 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
                       // Create a new Accessory for this camera:
                       var cameraAccessory = new Accessory(discoveredCamera.name, discoveredCamera.uuid, hap.Accessory.Categories.CAMERA);
                       var cameraConfig = {name: discoveredCamera.name, videoConfig: videoConfig};
+                      cameraAccessory
+                      .getService(Service.AccessoryInformation)
+                      .setCharacteristic(Characteristic.Manufacturer, "Ubiquiti Networks, Inc.")
+                      .setCharacteristic(Characteristic.Model, discoveredCamera.model)
+                      .setCharacteristic(Characteristic.SerialNumber, discoveredCamera.uuid)
+                      .setCharacteristic(Characteristic.FirmwareRevision, discoveredCamera.firmwareVersion);
 
                       debug(JSON.stringify(cameraConfig));
 
