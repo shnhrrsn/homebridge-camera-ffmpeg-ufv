@@ -98,8 +98,6 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
                 // channel definition later:
                 streamingPort = discoveredNvr.systemInfo.rtspPort;
 
-                var overrideHost = nvrConfig.overrideHost !== false && (self.config.overrideHost || nvrConfig.overrideHost)
-
                 // Within each NVR we should have one or more servers:
                 var discoveredServers = discoveredNvr.servers;
 
@@ -108,8 +106,8 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
 
                   serverName = discoveredServer.name;
 
-                  // Hostname for the streams:
-                  streamingHost = overrideHost ? nvrConfig.apiHost : discoveredServer.host;
+                  // Override Hostname for the streams:
+                  streamingHost = nvrConfig.apiHost; // discoveredServer.host;
                 });
 
                 // Hack: there is at this time only one 'server' object.
@@ -144,13 +142,12 @@ ffmpegUfvPlatform.prototype.didFinishLaunching = function() {
                         var rtspUri = discoveredChannel.rtspUris[0];
 
                         // Since the Hostname isn't configurable from UFV admin, we can override the hostname here
-                        if (overrideHost) {
-                          var url = URL.parse(rtspUri, true);
-                          url.hostname = nvrConfig.apiHost;
-                          delete url.href;
-                          delete url.host;
-                          rtspUri = URL.format(url);
-                        }
+                        var url = URL.parse(rtspUri, true);
+                        url.hostname = nvrConfig.apiHost;
+                        delete url.href;
+                        delete url.host;
+                        rtspUri = URL.format(url);
+
                         debug("Discovered server " + rtspUri);
                       } else {
                         var rtspUri = 'rtsp://' + streamingHost + ':' + streamingPort + '/' + rtspAlias;
