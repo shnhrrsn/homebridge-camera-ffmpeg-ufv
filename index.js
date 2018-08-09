@@ -115,8 +115,8 @@ ffmpegUfvPlatform.prototype.accessories = function(callback) {
 
                   serverName = discoveredServer.name;
 
-                  // Hostname for the streams:
-                  streamingHost = discoveredServer.host;
+                  // Override Hostname for the streams:
+                  streamingHost = nvrConfig.apiHost; // discoveredServer.host;
 
                   server = discoveredServer;
 
@@ -152,6 +152,15 @@ ffmpegUfvPlatform.prototype.accessories = function(callback) {
 
                       if ( discoveredChannel.hasOwnProperty('rtspUris') ) {
                         var rtspUri = discoveredChannel.rtspUris[0];
+
+                        // Since the Hostname isn't configurable from UFV admin, we can override the hostname here
+                        var url = URL.parse(rtspUri, true);
+                        url.hostname = nvrConfig.apiHost;
+                        delete url.href;
+                        delete url.host;
+                        rtspUri = URL.format(url);
+
+                        debug("Discovered server " + rtspUri);
                       } else {
                         var rtspUri = 'rtsp://' + streamingHost + ':' + streamingPort + '/' + rtspAlias;
                       }
