@@ -43,7 +43,8 @@ On your homebridge system, edit config.json to add a platform block like this:
       "apiHost": "nvr-ip-or-hostname.example.com",
       "apiPort": 7443,
       "apiProtocol": "https",
-      "apiKey": "<api key from NVR user settings>"
+      "apiKey": "<api key from NVR user settings>",
+      "motionSensors": true
     }
   ]
 }
@@ -52,6 +53,7 @@ On your homebridge system, edit config.json to add a platform block like this:
 - apiPort is the port your admin portal is listening on, usually 7080 or 7443.
 - apiProtocol is either http or https.
 - apiKey is the API key you noted earlier.
+- motionSensors (optional) lets you disable motion sensors from the homebridge plugin. Must equal false to disable.
 
 Start or restart homebridge to update the configuration.
 
