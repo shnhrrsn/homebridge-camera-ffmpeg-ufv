@@ -133,7 +133,7 @@ ffmpegUfvPlatform.prototype.accessories = function(callback) {
                   // Each camera has more than one channel.
                   // The channel is where the actual streaming params live:
 
-                  var discoveredChannels = discoveredCamera.channels;
+                  var discoveredChannels = ( discoveredCamera.channels || [] );
 
                   // Go through each channel, see if it is rtspEnabled, and if so,
                   // post it to homebridge and move on to the next camera
