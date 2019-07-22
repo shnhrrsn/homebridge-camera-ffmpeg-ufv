@@ -301,7 +301,6 @@ UFV.prototype.handleStreamRequest = function(request) {
           '-vcodec', 'copy',
           '-an',
           '-f', 'rawvideo',
-          '-tune', 'zerolatency',
           '-bufsize', vbitrate +'k',
           '-payload_type', '99',
           '-ssrc', videoSsrc,
@@ -330,7 +329,7 @@ UFV.prototype.handleStreamRequest = function(request) {
             `srtp://${targetAddress}:${targetAudioPort}?rtcpport=${targetAudioPort}&localrtcpport=${targetAudioPort}&pkt_size=1378`,
           );
         }
-        console.log(ffmpegCommand);
+        console.log(ffmpegCommand.join(' '));
         let ffmpeg = spawn('ffmpeg', ffmpegCommand, {env: process.env});
         this.ongoingSessions[sessionIdentifier] = ffmpeg;
       }
